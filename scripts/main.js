@@ -18,6 +18,7 @@ var gameScreen = {
     this.ctx = this.canvas.getContext('2d');
     this.interval = setInterval(updateGameScreen)
     document.addEventListener('keydown', handleInput)
+    document.addEventListener('keyup', handleInput)
   },
   clear : function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -61,12 +62,18 @@ function updateGameScreen() {
 // TODO: require holding down button rather than just constant movement
 function handleInput(event) {
   const key = event.key
-  if (key === 'a') {
-    playerOne.speed = -1;
-  } else if (key === 'd') {
-    playerOne.speed = 1;
-  }
+  if(event.type == 'keyup') playerOne.speed = 0;
+    else{
+      if (key === 'a') {
+        playerOne.speed = -1;
+      } else if (key === 'd') {
+        playerOne.speed = 1;
+      }
+    }
+
 }
+
+
 
 
 
