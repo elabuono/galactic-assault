@@ -66,7 +66,7 @@ function updateGameScreen() {
     playerTwo.update();
 }
 
-// move shipa
+// move ship
 // TODO: require holding down button rather than just constant movement
 function handleInput(event) {
   const key = event.key
@@ -90,10 +90,6 @@ function handleInput(event) {
       }
     }
 }
-
-
-
-
 
 // design a basic movement scheme for the image to move side to side
 function ship_movement() {
