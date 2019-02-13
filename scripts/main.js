@@ -1,11 +1,13 @@
 // constants
 let ship_x = 10
-let ship_y = 450
+let ship1_y = 450
+let ship2_y = 0
 let ship_size = 50
 var playerOne;
 
 function launchGame() {
-  playerOne = new component(ship_size, ship_size, ship_x, ship_y);
+  playerOne = new component(ship_size, ship_size, ship_x, ship1_y);
+  playerTwo = new component(ship_size, ship_size,ship_x, ship2_y);
   gameScreen.start();
 }
 
@@ -43,10 +45,14 @@ function component(width, height, x, y) {
   },
   this.movePos = function() {
     if(this.x >= 10 && this.speed > 0) {
-      if(this.x < 440) {this.x += this.speed;}
+      if(this.x < 440) {
+        this.x += this.speed;
+      }
     }
     if(this.x <= 440 && this.speed < 0) {
-      if(this.x > 10) {this.x += this.speed;}
+      if(this.x > 10) {
+        this.x += this.speed;
+      }
     }
   }
 }
@@ -56,12 +62,15 @@ function updateGameScreen() {
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
+    playerTwo.movePos();
+    playerTwo.update();
 }
 
 // move ship
 // TODO: require holding down button rather than just constant movement
 function handleInput(event) {
   const key = event.key
+  //if(event.)
   if(event.type == 'keyup') playerOne.speed = 0;
     else{
       if (key === 'a') {
@@ -79,10 +88,12 @@ function handleInput(event) {
 
 // design a basic movement scheme for the image to move side to side
 function ship_movement() {
-  ctx.clearRect(ship_x, ship_y, canvas.width, canvas.height)
+  ctx.clearRect(ship_x, ship1_y, canvas.width, canvas.height)
+  ctx.clearRect(ship_x, ship2_y, canvas.width, canvas.height)
   ship_image = new Image();
   ship_image.src = 'img/ship.png';
-  ctx.drawImage(ship_image, ship_x, ship_y, ship_size, ship_size)
+  ctx.drawImage(ship_image, ship_x, ship1_y, ship_size, ship_size)
+  ctx.drawImage(ship_image, ship_x, ship2_y, ship_size, ship_size)
   requestAnimationFrame(ship_movement)
 }
 
