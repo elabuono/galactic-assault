@@ -66,20 +66,29 @@ function updateGameScreen() {
     playerTwo.update();
 }
 
-// move ship
+// move shipa
 // TODO: require holding down button rather than just constant movement
 function handleInput(event) {
   const key = event.key
-  //if(event.)
-  if(event.type == 'keyup') playerOne.speed = 0;
+  if(event.type == 'keyup' && (key == 'a' || key == 'd')) playerOne.speed = 0;
+    else if (event.type == 'keyup' && (key == 'j' || key == 'l')) playerTwo.speed = 0;
     else{
-      if (key === 'a') {
-        playerOne.speed = -1;
-      } else if (key === 'd') {
-        playerOne.speed = 1;
+      switch (key) {
+        case 'a':
+          playerOne.speed = -1;
+          break;
+        case 'd':
+          playerOne.speed = 1;
+          break;
+        case 'j':
+          playerTwo.speed = -1;
+          break;
+        case 'l':
+          playerTwo.speed = 1;
+        default:
+          break;
       }
     }
-
 }
 
 
