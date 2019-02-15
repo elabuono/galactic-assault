@@ -3,11 +3,14 @@ let ship_x = 10
 let ship1_y = 450
 let ship2_y = 0
 let ship_size = 50
+let playerOneImg = 'img/player1.png'
+let playerTwoImg = 'img/player2.png'
 var playerOne;
+var playerTwo;
 
 function launchGame() {
-  playerOne = new component(ship_size, ship_size, ship_x, ship1_y);
-  playerTwo = new component(ship_size, ship_size,ship_x, ship2_y);
+  playerOne = new component(playerOneImg, ship_size, ship_size, ship_x, ship1_y);
+  playerTwo = new component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y);
   gameScreen.start();
 }
 
@@ -31,17 +34,17 @@ var gameScreen = {
 }
 
 // first component: the player's ship
-function component(width, height, x, y) {
+function component(image, width, height, x, y) {
   this.width = width;
   this.height = height;
   this.x = x;
   this.y = y;
   this.speed = 0;
-  ship_image = new Image();
-  ship_image.src = 'img/ship.png';
+  this.ship_image = new Image();
+  this.ship_image.src = image;
   this.update = function() {
     ctx = gameScreen.ctx;
-    ctx.drawImage(ship_image, this.x, this.y, this.width, this.height);
+    ctx.drawImage(this.ship_image, this.x, this.y, this.width, this.height);
   },
   this.movePos = function() {
     if(this.x >= 10 && this.speed > 0) {
