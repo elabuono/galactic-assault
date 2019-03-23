@@ -5,13 +5,40 @@ let ship2_y = 0
 let ship_size = 50
 let playerOneImg = 'img/player1.png'
 let playerTwoImg = 'img/player2.png'
+let enemyImg= 'img/enemy1.png'
 var playerOne;
 var playerTwo;
+var enemies;
+var enemyCountRow = 4;
+var enemyRows = 4
+var startx
+
 
 function launchGame() {
-  playerOne = new component(playerOneImg, ship_size, ship_size, ship_x, ship1_y);
-  playerTwo = new component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y);
+  playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y);
+  playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y);
+
+  enemies = [enemyCountRow * enemyRows];
   gameScreen.start();
+  enemyWidth = gameScreen.ctx.canvas.clientWidth/(enemyCountRow);
+  x = 0;
+
+  for (var i = 0; i < enemyRows; i++) {
+    for (var j = 0; j < enemyCountRow; j++) {
+      enemies[x] = new Enemy(enemyImg);
+      enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
+      enemies[x].y = 200+i*50;
+      if(i%2 == 0){
+        enemies[x].dir = 'left'
+      }else{
+        enemies[x].dir = 'right'
+      }
+      x++;
+    }
+  }
+
+  startx = 0;
+
 }
 
 // utilize canvas from html, set interval for components
@@ -33,8 +60,45 @@ var gameScreen = {
   }
 }
 
+
+function Enemy(image, width){
+  this.x;
+  this.y;
+  this.ship_image = new Image();
+  this.ship_image.src = image;
+  this.imageWidth = 50;
+  this.imageHeight = 50;
+  this.dir = 'left';
+  this.inc = 0
+  this.change = false;
+  this.update = function (){
+    this.inc++;
+      if(this.inc>100){
+        if ((this.x>=450 || this.x<=startx) && !this.change) {
+          this.y -= this.imageWidth/2;
+          if(this.dir == 'left'){
+            this.dir = "right"
+          }else{
+            this.dir = 'left'
+          }
+          this.change = true;
+        }else{
+          if(this.dir == "right"){
+            this.x += this.imageWidth/2;
+          }else{
+            this.x-= this.imageWidth/2;
+          }
+          this.change = false;
+        }
+        this.inc = 0;
+      }
+    ctx = gameScreen.ctx;
+    ctx.drawImage(this.ship_image,this.x,this.y,this.imageWidth,this.imageHeight);
+  }
+
+}
 // first component: the player's ship
-function component(image, width, height, x, y) {
+function Component(image, width, height, x, y) {
   this.width = width;
   this.height = height;
   this.x = x;
@@ -67,6 +131,9 @@ function updateGameScreen() {
     playerOne.update();
     playerTwo.movePos();
     playerTwo.update();
+    for (var i = 0; i < enemies.length; i++) {
+      enemies[i].update();
+    }
 }
 
 // move ship
