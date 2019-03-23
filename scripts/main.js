@@ -24,17 +24,27 @@ function launchGame() {
   enemies = [enemyCountRow * enemyRows];
   gameScreen.start();
   enemyWidth = gameScreen.ctx.canvas.clientWidth/(enemyCountRow);
+  var starty = gameScreen.ctx.canvas.clientHeight;
   x = 0;
 
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
       enemies[x] = new Enemy(enemyImg);
-      enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
-      enemies[x].y = 200+i*50;
+
       if(i%2 == 0){
         enemies[x].dir = 'left'
       }else{
         enemies[x].dir = 'right'
+      }
+      if(i<enemyRows/2){
+        enemies[x].updown = 'up';
+        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
+        enemies[x].y = starty/2-(i+1)*50;
+      }else{
+        enemies[x].updown = 'down';
+        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
+        enemies[x].y = starty/2+(i-2)*50;
+
       }
       x++;
     }
@@ -87,10 +97,12 @@ function Enemy(image, width){
   this.inc = 0
   this.change = false;
   this.dead = false;
+  this.updown ;
   this.update = function (){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
       let lzr = b[i];
+      //Kill detection
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth) && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)){
         this.dead = true;
         if(lzr.shotBy == 'one'){
@@ -105,9 +117,11 @@ function Enemy(image, width){
       }
     }
     this.inc++;
+    //Move the enemies
       if(this.inc>50){
         if ((this.x>=500-this.imageWidth || this.x<=0) && !this.change) {
-          this.y -= this.imageWidth/2;
+          if(this.updown == 'up')this.y -= this.imageWidth/2;
+          else this.y += this.imageWidth/2;
           if(this.dir == 'left'){
             this.dir = "right"
           }else{
