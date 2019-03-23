@@ -87,6 +87,7 @@ function Bullet(x, y, shooter){
 }
 
 function Enemy(image, width){
+  //// TODO: make ships only get hit by their specific ships lazers, not opponents
   this.x;
   this.y;
   this.ship_image = new Image();
@@ -102,24 +103,25 @@ function Enemy(image, width){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
       let lzr = b[i];
-      //Kill detection
+      //if the lazer is within the ships boundaries, that is a hit
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth) && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)){
         this.dead = true;
         if(lzr.shotBy == 'one'){
-          lzr.y = -1000;
+          lzr.y = -1000; //move far off screen
           p1Kill++;
         }
           else {
-            lzr.y = 1000;
+            lzr.y = 1000; // movee far off screen
             p2Kill++;
           }
         break;
       }
     }
     this.inc++;
-    //Move the enemies
+    //Move the enemies every 50 refreshes
       if(this.inc>50){
         if ((this.x>=500-this.imageWidth || this.x<=0) && !this.change) {
+          //descides whether the ship was moving up or down
           if(this.updown == 'up')this.y -= this.imageWidth/2;
           else this.y += this.imageWidth/2;
           if(this.dir == 'left'){
@@ -127,8 +129,9 @@ function Enemy(image, width){
           }else{
             this.dir = 'left'
           }
-          this.change = true;
+          this.change = true; //if changed, allow show to move over so it doesnt get moved down again
         }else{
+          //moves the ship right or left accordingly
           if(this.dir == "right"){
             this.x += this.imageWidth/4;
           }else{
