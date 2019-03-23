@@ -6,12 +6,14 @@ let ship_size = 50
 let playerOneImg = 'img/player1.png'
 let playerTwoImg = 'img/player2.png'
 let enemyImg= 'img/enemy1.png'
+let bulletImg = 'img/lazer.png'
 var playerOne;
 var playerTwo;
 var enemies;
 var enemyCountRow = 4;
 var enemyRows = 4
 var startx
+var b = [];
 
 
 function launchGame() {
@@ -60,6 +62,17 @@ var gameScreen = {
   }
 }
 
+function Bullet(x, y){
+  this.x = x;
+  this.y = y;
+  this.bullet_image = new Image();
+  this.bullet_image.src = bulletImg;
+  this.update = function(){
+    if(y>0)this.y -= 1;
+    ctx = gameScreen.ctx;
+    ctx.drawImage(this.bullet_image, this.x, this.y, 10, 50);
+  }
+}
 
 function Enemy(image, width){
   this.x;
@@ -71,10 +84,20 @@ function Enemy(image, width){
   this.dir = 'left';
   this.inc = 0
   this.change = false;
+  this.dead = false;
   this.update = function (){
+    if(!this.dead){
+    for (var i = 0; i < b.length; i++) {
+      let lzr = b[i];
+      if((lzr.x>this.x && lzr.x < this.x+this.imageWidth) && (lzr.y<this.y && lzr.y>this.y-this.imageHeight)){
+        this.dead = true;
+        lzr.y = -100;
+        break;
+      }
+    }
     this.inc++;
-      if(this.inc>100){
-        if ((this.x>=450 || this.x<=startx) && !this.change) {
+      if(this.inc>50){
+        if ((this.x>=500-this.imageWidth || this.x<=startx) && !this.change) {
           this.y -= this.imageWidth/2;
           if(this.dir == 'left'){
             this.dir = "right"
@@ -84,17 +107,19 @@ function Enemy(image, width){
           this.change = true;
         }else{
           if(this.dir == "right"){
-            this.x += this.imageWidth/2;
+            this.x += this.imageWidth/4;
           }else{
-            this.x-= this.imageWidth/2;
+            this.x-= this.imageWidth/4;
           }
           this.change = false;
         }
         this.inc = 0;
       }
-    ctx = gameScreen.ctx;
-    ctx.drawImage(this.ship_image,this.x,this.y,this.imageWidth,this.imageHeight);
+      ctx = gameScreen.ctx;
+      ctx.drawImage(this.ship_image,this.x,this.y,this.imageWidth,this.imageHeight);
+
   }
+}
 
 }
 // first component: the player's ship
@@ -134,6 +159,9 @@ function updateGameScreen() {
     for (var i = 0; i < enemies.length; i++) {
       enemies[i].update();
     }
+    for (var i = 0; i < b.length; i++) {
+      b[i].update();
+    }
 }
 
 // move ship
@@ -155,6 +183,8 @@ function handleInput(event) {
           break;
         case 'l':
           playerTwo.speed = 1;
+        case ' ':
+          b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2);
         default:
           break;
       }
