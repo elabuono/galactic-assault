@@ -12,7 +12,8 @@ var playerTwo;
 var enemies;
 var enemyCountRow = 4;
 var enemyRows = 4
-var startx
+var p1Kill = 0;
+var p2Kill = 0;
 var b = [];
 
 
@@ -39,7 +40,6 @@ function launchGame() {
     }
   }
 
-  startx = 0;
 
 }
 
@@ -62,13 +62,15 @@ var gameScreen = {
   }
 }
 
-function Bullet(x, y){
+function Bullet(x, y, shooter){
   this.x = x;
   this.y = y;
+  this.shotBy = shooter;
   this.bullet_image = new Image();
   this.bullet_image.src = bulletImg;
   this.update = function(){
-    if(y>0)this.y -= 1;
+    if(y>0 && this.shotBy == "one")this.y -= 1;
+    if(y<400 && this.shotBy == "two")this.y += 1;
     ctx = gameScreen.ctx;
     ctx.drawImage(this.bullet_image, this.x, this.y, 10, 50);
   }
@@ -89,15 +91,22 @@ function Enemy(image, width){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
       let lzr = b[i];
-      if((lzr.x>this.x && lzr.x < this.x+this.imageWidth) && (lzr.y<this.y && lzr.y>this.y-this.imageHeight)){
+      if((lzr.x>this.x && lzr.x < this.x+this.imageWidth) && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)){
         this.dead = true;
-        lzr.y = -100;
+        if(lzr.shotBy == 'one'){
+          lzr.y = -1000;
+          p1Kill++;
+        }
+          else {
+            lzr.y = 1000;
+            p2Kill++;
+          }
         break;
       }
     }
     this.inc++;
       if(this.inc>50){
-        if ((this.x>=500-this.imageWidth || this.x<=startx) && !this.change) {
+        if ((this.x>=500-this.imageWidth || this.x<=0) && !this.change) {
           this.y -= this.imageWidth/2;
           if(this.dir == 'left'){
             this.dir = "right"
@@ -183,8 +192,12 @@ function handleInput(event) {
           break;
         case 'l':
           playerTwo.speed = 1;
+          break;
         case ' ':
-          b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2);
+          b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
+          break;
+        case 'k':
+          b[b.length] = new Bullet (playerTwo.x+playerTwo.width/2,playerTwo.y+playerTwo.height/2, "two");
         default:
           break;
       }
