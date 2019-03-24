@@ -10,8 +10,8 @@ let bulletImg = 'img/lazer.png'
 var playerOne;
 var playerTwo;
 var enemies;
-var enemyCountRow = 4;
-var enemyRows = 4
+var enemyCountRow = 6;
+var enemyRows = 6;
 var p1Kill = 0;
 var p2Kill = 0;
 var b = [];
@@ -211,10 +211,10 @@ function handleInput(event) {
           playerTwo.speed = 1;
           break;
         case ' ':
-          b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
+          if(event.type == 'keydown') b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
           break;
         case 'k':
-          b[b.length] = new Bullet (playerTwo.x+playerTwo.width/2,playerTwo.y+playerTwo.height/2, "two");
+          if(event.type == 'keydown') b[b.length] = new Bullet (playerTwo.x+playerTwo.width/2,playerTwo.y+playerTwo.height/2, "two");
         default:
           break;
       }
