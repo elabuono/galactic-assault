@@ -10,8 +10,8 @@ let bulletImg = 'img/lazer.png'
 var playerOne;
 var playerTwo;
 var enemies;
-var enemyCountRow = 6;
-var enemyRows = 6;
+var enemyCountRow = 4;
+var enemyRows = 4;
 var p1Kill = 0;
 var p2Kill = 0;
 var b = [];
@@ -28,10 +28,16 @@ function launchGame() {
   var starty = gameScreen.ctx.canvas.clientHeight;
   x = 0;
 
+//Create enemies/**
+
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
       enemies[x] = new Enemy(enemyImg);
-
+      if(i+1>enemyRows/2){
+        enemies[x].forPlayer = 'one';
+      }else{
+        enemies[x].forPlayer = 'two';
+      }
       if(i%2 == 0){
         enemies[x].dir = 'left'
       }else{
@@ -101,21 +107,24 @@ function Enemy(image, width){
   this.change = false;
   this.dead = false;
   this.updown;
+  this.forPlayer = false;
   this.update = function (){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
       let lzr = b[i];
       //if the lazer is within the ships boundaries, that is a hit
-      if((lzr.x>this.x && lzr.x < this.x+this.imageWidth) && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)){
+      if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
+          && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
+          && lzr.shotBy == this.forPlayer){
         this.dead = true;
         if(lzr.shotBy == 'one'){
           lzr.y = -1000; //move far off screen
           p1Kill++;
         }
-          else {
-            lzr.y = 1000; // movee far off screen
-            p2Kill++;
-          }
+        else {
+          lzr.y = 1000; // movee far off screen
+          p2Kill++;
+        }
         break;
       }
     }
@@ -184,11 +193,12 @@ function updateGameScreen() {
     playerOne.update();
     playerTwo.movePos();
     playerTwo.update();
-    for (var i = 0; i < enemies.length; i++) {
-      enemies[i].update();
-    }
+
     for (var i = 0; i < b.length; i++) {
       b[i].update();
+    }
+    for (var i = 0; i < enemies.length; i++) {
+      enemies[i].update();
     }
 }
 
