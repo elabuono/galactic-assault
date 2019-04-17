@@ -17,6 +17,7 @@ var p2Kill = 0;
 var b = [];
 
 
+
 function launchGame() {
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y);
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y);
@@ -86,6 +87,7 @@ function Bullet(x, y, shooter){
   }
 }
 
+
 function Enemy(image, width){
   //// TODO: make ships only get hit by their specific ships lazers, not opponents
   this.x;
@@ -98,7 +100,7 @@ function Enemy(image, width){
   this.inc = 0
   this.change = false;
   this.dead = false;
-  this.updown ;
+  this.updown;
   this.update = function (){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
