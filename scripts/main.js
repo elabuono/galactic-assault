@@ -12,9 +12,9 @@ var playerTwo;
 var enemies;
 var enemyCountRow = 4;
 var enemyRows = 4;
-var p1Kill = 0;
-var p2Kill = 0;
-var b = [];
+var p1Kill = 0; //kills for player 1 (to be used for score and reinforcement  )
+var p2Kill = 0; //kills for player 2
+var b = []; //list of bullets
 
 
 
@@ -205,7 +205,7 @@ function updateGameScreen() {
 // move ship
 // TODO: require holding down button rather than just constant movement
 function handleInput(event) {
-  const key = event.key
+  const key = event.key;
   if(event.type == 'keyup' && (key == 'a' || key == 'd')) playerOne.speed = 0;
     else if (event.type == 'keyup' && (key == 'j' || key == 'l')) playerTwo.speed = 0;
     else{
@@ -242,6 +242,11 @@ function ship_movement() {
   ctx.drawImage(ship_image, ship_x, ship1_y, ship_size, ship_size)
   ctx.drawImage(ship_image, ship_x, ship2_y, ship_size, ship_size)
   requestAnimationFrame(ship_movement)
+}
+
+//Used to make the opponent play
+function AI(){
+
 }
 
 // initialize ship location
