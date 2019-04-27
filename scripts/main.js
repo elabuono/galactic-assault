@@ -63,7 +63,7 @@ function launchGame() {
 
   barriers = new Array(12);
   for(var i=0; i<6;i++){
-    barriers[i] = new Barrier(ship_x+i*83, 0+75)
+    barriers[i] = new Barrier(ship_x+i*83, 0+90)
   }
   for (var i = 6; i <12 ; i++) {
     barriers[i] = new Barrier(ship_x+(i-6)*83, 500-75)
@@ -231,17 +231,18 @@ function Component(image, width, height, x, y, player) {
     for (var i = 0; i < b.length; i++) {
       //var tempy = b[i].shotBy.equals("two") ?
       var tempy = b[i].shotBy == "one" ? 50 : 0;
-      if(b[i].x<this.x+10
+      if(b[i].x<this.x+this.width
         && b[i].x>this.x
-        && b[i].y+tempy < this.y+10
-        && b[i].y+tempy > this.y){
+        && b[i].y< this.y+this.height/2
+        && b[i].y> this.y){
           if(this.player == "one")p1Lives--;
           else p2Lives--;
           b[i].x = 1000;
+
         }
     }
 
-    if(!((this.player == 'one' && p1Lives==0)||(this.player == 'two' && p2Lives==0))){
+    if(!((this.player == 'one' && p1Lives<=0)||(this.player == 'two' && p2Lives<=0))){
       ctx = gameScreen.ctx;
       ctx.drawImage(this.ship_image, this.x, this.y, this.width, this.height);
     }
@@ -300,10 +301,10 @@ function handleInput(event) {
           playerTwo.speed = 1;
           break;
         case ' ':
-          if(event.type == 'keydown') b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
+          if(event.type == 'keyup') b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
           break;
         case 'k':
-          if(event.type == 'keydown') b[b.length] = new Bullet (playerTwo.x+playerTwo.width/2,playerTwo.y+playerTwo.height/2, "two");
+          if(event.type == 'keyup') b[b.length] = new Bullet (playerTwo.x+playerTwo.width/2,playerTwo.y+playerTwo.height/2, "two");
         default:
           break;
       }
