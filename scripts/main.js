@@ -7,20 +7,24 @@ let playerOneImg = 'img/player1.png'
 let playerTwoImg = 'img/player2.png'
 let enemyImg= 'img/enemy1.png'
 let bulletImg = 'img/lazer.png'
+let barrierBlockImg = 'img/barrierBlockImg.png'
 var playerOne;
 var playerTwo;
 var enemies;
+var barriers;
 var enemyCountRow = 4;
 var enemyRows = 4;
 var p1Kill = 0;
 var p2Kill = 0;
+var p1Lives = 3;
+var p2Lives = 3;
 var b = [];
 
 
 
 function launchGame() {
-  playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y);
-  playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y);
+  playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y, "one");
+  playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y, "two");
 
   enemies = [enemyCountRow * enemyRows];
   gameScreen.start();
@@ -57,7 +61,58 @@ function launchGame() {
     }
   }
 
+  barriers = new Array(12);
+  for(var i=0; i<6;i++){
+    barriers[i] = new Barrier(ship_x+i*83, 0+75)
+  }
+  for (var i = 6; i <12 ; i++) {
+    barriers[i] = new Barrier(ship_x+(i-6)*83, 500-75)
+  }
 
+}
+
+function BarrierBlock(x, y){
+  this.x = x;
+  this.y = y;
+
+  this.barrier_image = new Image();
+  this.barrier_image.src = barrierBlockImg;
+  this.hit = false;
+  this.update = function(){
+    if(!this.hit){
+      for (var i = 0; i < b.length; i++) {
+        //var tempy = b[i].shotBy.equals("two") ?
+        var tempy = b[i].shotBy == "one" ? 50 : 0;
+        if(b[i].x<this.x+10
+          && b[i].x>this.x
+          && b[i].y+tempy < this.y+10
+          && b[i].y+tempy > this.y){
+            this.hit = true;
+            b[i].hit = true;
+          }
+      }
+      ctx = gameScreen.ctx;
+      ctx.drawImage(this.barrier_image, this.x, this.y, 10, 10);
+    }
+  }
+
+}
+
+function Barrier(x, y){
+  this.x = x
+  this.y = y
+  this.Barrier = new Array(12);
+  for (var i = 0; i < this.Barrier.length; i++) {
+    if(i<4)  this.Barrier[i] = new BarrierBlock(x+i*10,y);
+    if(i>=4 && i<8)  this.Barrier[i] = new BarrierBlock(x+(i-4)*10,y-10);
+    if(i>=8) this.Barrier[i] = new BarrierBlock(x+(i-8)*10,y-20);
+  }
+
+  this.update = function(){
+    for (var i = 0; i < this.Barrier.length; i++) {
+      this.Barrier[i].update();
+    }
+  }
 }
 
 // utilize canvas from html, set interval for components
@@ -85,11 +140,13 @@ function Bullet(x, y, shooter){
   this.shotBy = shooter;
   this.bullet_image = new Image();
   this.bullet_image.src = bulletImg;
+  this.hit = false;
   this.update = function(){
-    if(y>0 && this.shotBy == "one")this.y -= 1;
-    if(y<400 && this.shotBy == "two")this.y += 1;
+    if(this.hit)return 0;
+    if(y>0 && this.shotBy == "one")this.y -= 2;
+    if(y<400 && this.shotBy == "two")this.y += 2;
     ctx = gameScreen.ctx;
-    ctx.drawImage(this.bullet_image, this.x, this.y, 10, 50);
+    ctx.drawImage(this.bullet_image, this.x, this.y, 2, 50);
   }
 }
 
@@ -122,7 +179,7 @@ function Enemy(image, width){
           p1Kill++;
         }
         else {
-          lzr.y = 1000; // movee far off screen
+          lzr.y = 1000; // move far off screen
           p2Kill++;
         }
         break;
@@ -130,7 +187,7 @@ function Enemy(image, width){
     }
     this.inc++;
     //Move the enemies every 50 refreshes
-      if(this.inc>50){
+      if(this.inc>25){
         if ((this.x>=500-this.imageWidth || this.x<=0) && !this.change) {
           //descides whether the ship was moving up or down
           if(this.updown == 'up')this.y -= this.imageWidth/2;
@@ -160,7 +217,7 @@ function Enemy(image, width){
 
 }
 // first component: the player's ship
-function Component(image, width, height, x, y) {
+function Component(image, width, height, x, y, player) {
   this.width = width;
   this.height = height;
   this.x = x;
@@ -168,9 +225,26 @@ function Component(image, width, height, x, y) {
   this.speed = 0;
   this.ship_image = new Image();
   this.ship_image.src = image;
+  this.player = player
   this.update = function() {
-    ctx = gameScreen.ctx;
-    ctx.drawImage(this.ship_image, this.x, this.y, this.width, this.height);
+    //check to see if hit
+    for (var i = 0; i < b.length; i++) {
+      //var tempy = b[i].shotBy.equals("two") ?
+      var tempy = b[i].shotBy == "one" ? 50 : 0;
+      if(b[i].x<this.x+10
+        && b[i].x>this.x
+        && b[i].y+tempy < this.y+10
+        && b[i].y+tempy > this.y){
+          if(this.player == "one")p1Lives--;
+          else p2Lives--;
+          b[i].x = 1000;
+        }
+    }
+
+    if(!((this.player == 'one' && p1Lives==0)||(this.player == 'two' && p2Lives==0))){
+      ctx = gameScreen.ctx;
+      ctx.drawImage(this.ship_image, this.x, this.y, this.width, this.height);
+    }
   },
   this.movePos = function() {
     if(this.x >= 10 && this.speed > 0) {
@@ -193,6 +267,9 @@ function updateGameScreen() {
     playerOne.update();
     playerTwo.movePos();
     playerTwo.update();
+    for (var i = 0; i < barriers.length; i++) {
+      barriers[i].update();
+    }
 
     for (var i = 0; i < b.length; i++) {
       b[i].update();
@@ -232,6 +309,8 @@ function handleInput(event) {
       }
     }
 }
+
+
 
 // design a basic movement scheme for the image to move side to side
 function ship_movement() {
