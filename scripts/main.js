@@ -21,7 +21,6 @@ var p2Lives = 3;
 var b = [];
 
 
-
 function launchGame() {
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y, "one");
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y, "two");
@@ -82,8 +81,8 @@ function BarrierBlock(x, y){
     if(!this.hit){
       for (var i = 0; i < b.length; i++) {
         //var tempy = b[i].shotBy.equals("two") ?
-        var tempy = b[i].shotBy == "one" ? 50 : 0;
-        if(b[i].x<this.x+10
+        var tempy = b[i].shotBy == "one" ? 25 : 25;
+        if(b[i].x<=this.x+10
           && b[i].x>this.x
           && b[i].y+tempy < this.y+10
           && b[i].y+tempy > this.y){
@@ -263,6 +262,8 @@ function Component(image, width, height, x, y, player) {
 
 // interval updates to game screen
 function updateGameScreen() {
+    document.getElementById('p2Kill').value = p2Kill;
+    document.getElementById('p2Lives').value = p2Lives;
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
