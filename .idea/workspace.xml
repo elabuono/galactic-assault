@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d2400057-0a13-4f29-9347-bdb5d802e996" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/AI.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/AI.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,12 +45,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/AI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
+            <state relative-caret-position="136">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
-                <marker date="1556588213248" expanded="true" signature="226:231" ph="..." />
-                <marker date="1556588213248" expanded="true" signature="232:388" ph="..." />
+                <marker date="1556588862894" expanded="true" signature="149:218" ph="..." />
               </folding>
             </state>
           </provider>
@@ -68,7 +67,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="91" />
     <option name="y" value="23" />
     <option name="width" value="1180" />
@@ -157,6 +156,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="91" y="23" width="1180" height="812" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24935289" />
@@ -183,12 +183,11 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/scripts/AI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="31" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
+        <state relative-caret-position="136">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
-            <marker date="1556588213248" expanded="true" signature="226:231" ph="..." />
-            <marker date="1556588213248" expanded="true" signature="232:388" ph="..." />
+            <marker date="1556588862894" expanded="true" signature="149:218" ph="..." />
           </folding>
         </state>
       </provider>

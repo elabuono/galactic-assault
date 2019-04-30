@@ -1,19 +1,15 @@
 from pynput.keyboard import Controller
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import time
-from appscript import app, k
 from random import randint
 
 keyboard = Controller()
 
 
 def press(x):
-    #app('System Events').keystroke(x, using=k.command_down)
     keyboard.press(x)
     time.sleep(.25)
     keyboard.release(x)
-    #keyboard.press(Keys.)jllkk
 
 
 def action_space(i):
