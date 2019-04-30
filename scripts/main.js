@@ -16,8 +16,6 @@ var p1Kill = 0; //kills for player 1 (to be used for score and reinforcement  )
 var p2Kill = 0; //kills for player 2
 var b = []; //list of bullets
 
-
-
 function launchGame() {
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y);
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y);
