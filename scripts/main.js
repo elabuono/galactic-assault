@@ -170,7 +170,7 @@ function Enemy(image, width){
       let lzr = b[i];
       //if the lazer is within the ships boundaries, that is a hit
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
-          && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
+          && (lzr.y<this.y+10 && lzr.y>this.y-this.imageHeight/2+25)
           && lzr.shotBy == this.forPlayer){
         this.dead = true;
         if(lzr.shotBy == 'one'){

@@ -27,7 +27,7 @@ f.truncate(0)
 movementList = []
 bestMovementList = []
 maxScore = 0
-for x in range(100):
+for x in range(10):
     driver = webdriver.Chrome()
     driver.get('file:///Users/nickmasciandaro/CSCI/TestJS/galactic-assault/index.html')
     element = driver.find_element_by_id('p2Kill')
@@ -42,6 +42,8 @@ for x in range(100):
         bestMovementList = movementList.copy()
     driver.close()
     movementList = []
+
+
 for l in bestMovementList:
     f.write(l)
 f.close()
