@@ -264,6 +264,10 @@ function Component(image, width, height, x, y, player) {
 function updateGameScreen() {
     document.getElementById('p2Kill').value = p2Kill;
     document.getElementById('p2Lives').value = p2Lives;
+    enemyTotal = enemyRows*enemyCountRow/2;
+    document.getElementById('isDone').value = (p2Lives <= 0)||(p1Lives<=0) ? true:false;
+    document.getElementById('p1Pos').value = playerOne.x;
+    document.getElementById('p2Pos').value = playerTwo.x;
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
@@ -323,11 +327,6 @@ function ship_movement() {
   ctx.drawImage(ship_image, ship_x, ship1_y, ship_size, ship_size)
   ctx.drawImage(ship_image, ship_x, ship2_y, ship_size, ship_size)
   requestAnimationFrame(ship_movement)
-}
-
-//Used to make the opponent play
-function AI(){
-
 }
 
 // initialize ship location
