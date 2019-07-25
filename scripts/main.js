@@ -21,10 +21,6 @@ var p1Lives = 3;
 var p2Lives = 3;
 var b = [];
 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 function launchGame() {
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y, "one");
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y, "two");
