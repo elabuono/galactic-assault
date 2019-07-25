@@ -3,6 +3,7 @@ let ship_x = 10
 let ship1_y = 450
 let ship2_y = 0
 let ship_size = 50
+let barrier_size = 10
 let playerOneImg = 'img/player1.png'
 let playerTwoImg = 'img/player2.png'
 let enemyImg= 'img/enemy1.png'
@@ -20,7 +21,10 @@ var p1Lives = 3;
 var p2Lives = 3;
 var b = [];
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 function launchGame() {
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y, "one");
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y, "two");
@@ -31,7 +35,7 @@ function launchGame() {
   var starty = gameScreen.ctx.canvas.clientHeight;
   x = 0;
 
-//Create enemies/**
+// Create enemies
 
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
@@ -91,7 +95,7 @@ function BarrierBlock(x, y){
           }
       }
       ctx = gameScreen.ctx;
-      ctx.drawImage(this.barrier_image, this.x, this.y, 10, 10);
+      ctx.drawImage(this.barrier_image, this.x, this.y, barrier_size, barrier_size);
     }
   }
 
@@ -156,8 +160,8 @@ function Enemy(image, width){
   this.y;
   this.ship_image = new Image();
   this.ship_image.src = image;
-  this.imageWidth = 50;
-  this.imageHeight = 50;
+  this.imageWidth = ship_size;
+  this.imageHeight = ship_size;
   this.dir = 'left';
   this.inc = 0
   this.change = false;
@@ -316,8 +320,6 @@ function handleInput(event) {
     }
 }
 
-
-
 // design a basic movement scheme for the image to move side to side
 function ship_movement() {
   ctx.clearRect(ship_x, ship1_y, canvas.width, canvas.height)
@@ -328,7 +330,3 @@ function ship_movement() {
   ctx.drawImage(ship_image, ship_x, ship2_y, ship_size, ship_size)
   requestAnimationFrame(ship_movement)
 }
-
-// initialize ship location
-//requestAnimationFrame(ship_movement)
-//ship_movement()
