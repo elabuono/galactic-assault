@@ -20,7 +20,7 @@ var p2Kill = 0;
 var p1Lives = 3;
 var p2Lives = 3;
 var b = [];
-
+//
 function launchGame() {
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y, "one");
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y, "two");
@@ -67,7 +67,8 @@ function launchGame() {
   for (var i = 6; i <12 ; i++) {
     barriers[i] = new Barrier(ship_x+(i-6)*83, 500-75)
   }
-
+    //requestAnimationFrame(updateGameScreen);
+    //setInterval(updateGameScreen(), 100);
 }
 
 function BarrierBlock(x, y){
@@ -267,7 +268,7 @@ function updateGameScreen() {
     enemyTotal = enemyRows*enemyCountRow/2;
     document.getElementById('isDone').value = (p2Lives <= 0)||(p1Lives<=0) ? true:false;
     document.getElementById('p1Pos').value = Math.round(playerOne.x/5);
-    document.getElementById('p2Pos').value = Math.round(playerTwo.x/50); //86 total positions
+    document.getElementById('p2Pos').value = Math.round(playerTwo.x/10); //86 total positions
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();

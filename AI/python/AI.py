@@ -10,20 +10,16 @@ from PIL import Image
 
 keyboard = Controller()
 
-qtable = np.zeros((3, 86*8*3))
+numberOfStates = 86*8*3
+qtable = np.zeros((numberOfStates,3)) #size of action_space times size of number of states
 
 
 class State:
-    def __init__(self, x1, x2):
-        self.p1x = x1
-        self.p2x = x2
-
-    def get_all_states(self):
-        return self.p1x * self.p2x
-
-    def set_state(self, state):
-        self.p1x = state.p1x
-        self.p2x = state.p2x
+    def __init__(self, p2Lives , p2Kill, p2Pos, p1Pos):
+        self.p2Lives = p2Lives
+        self.p2Kill = p2Kill
+        self.p2Pos = p2Pos
+        self.p1Pos = p1Pos
 
 
 def press(x):
@@ -41,7 +37,6 @@ def action_space(i):
         return 'k'
 
 
-
 #model = tf.keras.Sequential()
 
 
@@ -50,41 +45,45 @@ def action_space(i):
 movementList = []
 bestMovementList = []
 maxScore = 0
-epsilon = 1 #probability of mutation
+alpha = 0.1
+gamma = 0.6
+epsilon = 0.1
+
 oldp2Kill = 0
+totalEpochs = 10;
+
 
 def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
 
+def calcReward(old, n):
+    reward = 0;
+    if n.p2Kill > old.p2Kill:
+        reward += (n.p2Kill - old.p2Kill)*10
+    if n.p2Lives < old.p2Lives:
+        reward -= 20*(old.p2Lives-n.p2Lives)
+
 countFrame = 0
-for x in range(1):
+for x in range(totalEpochs):
     driver = webdriver.Chrome()
     driver.get("file:///Users/nickmasciandaro/CSCI/TestJS/galactic-assault/index.html")
 
     isDone = driver.find_element_by_id('isDone').get_attribute("value")
-    print(isDone)
     while isDone == "false":
-        #Screenshot
-        driver.get_screenshot_as_file("../images/orig/screenshot"+str(countFrame)+".png")
-        orig = Image.open("../images/orig/screenshot"+str(countFrame)+".png").convert('LA')
-        width, height = orig.size
-        cropped = orig.crop((200, 220, width - 1200, height - 70))
-        cropped.save("../images/grey/shot"+str(countFrame)+".png")
-
-        #img = mpimg.imread('../images/grey/shot'+str(countFrame)+'.png')
-        #gray = rgb2gray(img)
-        #plt.imshow(gray, cmap=plt.get_cmap('gray'), vmin=0, vmax=1)
-        #plt.show()
-        #img.save("../images/grey2/shot"+str(countFrame)+".png")
-
-        #/Screenshot
         countFrame += 1
         rand = random.random()
+
+        p2Lives = driver.find_element_by_id("p2Lives").get_attribute('value')
+        p2Kill = driver.find_element_by_id('p2Kill').get_attribute('value')
+        p2Pos = driver.find_element_by_id('p2Pos').get_attribute('value')
+        p1Pos = driver.find_element_by_id('p1Pos').get_attribute('value')
+        oldState = State(p2Lives, p2Kill, p2Pos, p1Pos)
+
         #Take action
         if rand < epsilon:
             press(action_space(random.randint(0, 2)))
         else:
-            press(action_space(random.randint(0, 2)))#press(np.argmax(qtable[]))
+            press(np.argmax(qtable[oldState]))
             #SmartMove exploit what is known //action = np.argmax(q_table[state])
 
         #get current state elements of game board (nextState, reward, done)
@@ -94,6 +93,13 @@ for x in range(1):
         p1Pos = driver.find_element_by_id('p1Pos').get_attribute('value')
         isDone = driver.find_element_by_id('isDone').get_attribute("value")
 
+        newState = State(p2Lives, p2Kill, p2Pos, p1Pos)
+
+        reward = calcReward(oldState, newState)
+
+
+
+
         #oldvalue = q_table[state, action] //get the old value of the table
         #next_max = np.max(q_table[next_state])
         #new_value = (1 - alpha) * old_value + alpha * (reward + gamma * next_max)
@@ -102,9 +108,3 @@ for x in range(1):
         #move to next state
 
     driver.close()
-
-
-#for l in bestMovementList:
-#    f.write(l)
-#f.close()
-
