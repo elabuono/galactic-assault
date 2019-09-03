@@ -18,7 +18,13 @@ After that you can run `.tables` to see the users table
 
 Run `SELECT * FROM users` to see all of the current users
 
-To insert users from the commandline, run `INSERT INTO users VALUES('User1', 'Password1')`
+To insert users from the commandline, run 
+```
+EXEC dbo.uspAddUser
+          @pusername = N'Name1',
+          @pPassword = N'Password1'
+```
+
 
 To view restrictions on the table, run `sq_help users`
 
