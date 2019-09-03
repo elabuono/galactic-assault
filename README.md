@@ -12,21 +12,15 @@ To go into the database, run the command `mssql -u sa -p galexy2019!`
 
 Once in, you can run `.databases` to view all of the databases
 
-To see the accounts, use the command `USE accounts`
+Run `SELECT * FROM accounts.dbo.[User]` to see all of the current users
 
-After that you can run `.tables` to see the users table
+To insert users from the commandline, run
 
-Run `SELECT * FROM users` to see all of the current users
-
-To insert users from the commandline, run 
 ```
-EXEC dbo.uspAddUser
-          @pusername = N'Name1',
-          @pPassword = N'Password1'
+EXEC accounts.dbo.uspAddUser\
+          @pusername = N'Adam',\
+          @password = N'N00Bgamer'
 ```
-
-
-To view restrictions on the table, run `sq_help users`
 
 ## Gameplay
 Player 1 (bottom player): A moves left, D moves right. Spacebar shoots lazers.
