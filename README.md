@@ -19,7 +19,7 @@ To insert users from the commandline, run
 ```
 EXEC accounts.dbo.uspAddUser\
           @pusername = N'Adam',\
-          @password = N'N00Bgamer'
+          @ppassword = N'N00Bgamer'
 ```
 
 ## Gameplay
