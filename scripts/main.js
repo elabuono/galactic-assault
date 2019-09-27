@@ -22,8 +22,8 @@ var p2Lives = 3;
 var b = [];
 //
 function launchGame() {
-  playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y, "one");
-  playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y, "two");
+  playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x+240, ship1_y, "one");
+  playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x+240, ship2_y, "two");
 
   enemies = [enemyCountRow * enemyRows];
   gameScreen.start();
