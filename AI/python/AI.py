@@ -44,9 +44,9 @@ def getStateNum(s):
 
 def press(x):
     keyboard.press(x)
-    keyboard.press(action_space_user(random.randint(0, 2)))
+    #keyboard.press(action_space_user(random.randint(0, 2)))
     time.sleep(.25)
-    keyboard.release(action_space_user(random.randint(0, 2)))
+    #keyboard.release(action_space_user(random.randint(0, 2)))
     keyboard.release(x)
     if x == 'j':
         return 0
@@ -76,10 +76,10 @@ def action_space(i):
 
 #f = open("movement.txt", "w+")
 #f.truncate(0)
-alpha = 0.1
+alpha = 0.1 #Learning rate
 gamma = 0.9
-epsilon = 0.1
-lr = .25
+epsilon = 0.2
+
 
 oldp2Kill = 0
 totalEpochs = 10
@@ -99,8 +99,8 @@ def calcReward(old, n, action):
         reward += (int(n.p2Kill) - int(old.p2Kill))/2
     if int(n.p2Lives) < int(old.p2Lives):
         reward -= (int(old.p2Lives)-int(n.p2Lives))
-    if(action==2): reward+=.05
-    if old.p2Pos == n.p2Pos and (action==0 or action==1): reward-=.05
+    if(action==2): reward+=.001
+    #if old.p2Pos == n.p2Pos and (action==0 or action==1): reward-=.05
     return reward
 
 
@@ -124,13 +124,13 @@ for x in range(99999999): #totalEpochs):
         oldState = getState(oldState)
         #Take action
 
-        if rand < epsilon :
+        if rand < epsilon:
             action = press(action_space(random.randint(0, 2)))
         else:
             c = action_space(np.argmax(qtable[getStateNum(oldState)]))
             print(np.argmax(qtable[getStateNum(oldState)]))
-            if c == None:
-                press(action_space(random.randint(0, 2)))
+            if c == None or qtable[getStateNum(oldState), np.argmax(qtable[getStateNum(oldState)])] == 0:
+                action = press(action_space(random.randint(0, 2)))
             else:
                 action = press(c)
 
@@ -149,9 +149,7 @@ for x in range(99999999): #totalEpochs):
         reward = calcReward(oldState, newState, action)
 
         #set q table to old state and reward ex:
-        qtable[getStateNum(oldState), action] = qtable[getStateNum(oldState), action] \
-                                                + lr * (reward+gamma*np.max(qtable[getStateNum(newState),:])
-                                                        -qtable[getStateNum(oldState), action])
+        qtable[getStateNum(oldState), action] = qtable[getStateNum(oldState), action]  + alpha * (reward+gamma*np.max(qtable[getStateNum(newState),:])- qtable[getStateNum(oldState), action])
 
         print(qtable[getStateNum(oldState)])
         #oldvalue = q_table[state, action] //get the old value of the table
