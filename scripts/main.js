@@ -18,8 +18,8 @@ var enemyCountRow = 4;
 var enemyRows = 4;
 var p1Kill = 0;
 var p2Kill = 0;
-var p1Lives = 3;
-var p2Lives = 3;
+var p1Lives = 5;
+var p2Lives = 5;
 var b = [];
 
 function launchGame() {
@@ -286,7 +286,7 @@ function updateGameScreen() {
       enemies[i].update();
     }
 
-    if(enemiesRemaining == 0) {
+    if(enemiesRemaining == 0 || (p1Lives == 0 || p2Lives == 0)) {
         nextRound();
     }
 }
@@ -294,8 +294,8 @@ function updateGameScreen() {
 function nextRound() {
   alert("Next round coming up!");
   // reset the health of players
-  p1Lives = 3;
-  p2Lives = 3;
+  p1Lives = 5;
+  p2Lives = 5;
   enemiesRemaining = 16;
   gameScreen.clear();
 
