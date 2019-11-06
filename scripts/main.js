@@ -176,10 +176,12 @@ function Enemy(image, width){
         if(lzr.shotBy == 'one'){
           lzr.y = -1000; //move far off screen
           p1Kill++;
+          document.getElementById('scorep1').innerHTML = "Player 1: " + p1Kill;
         }
         else {
           lzr.y = 1000; // move far off screen
           p2Kill++;
+          document.getElementById('scorep2').innerHTML = "Player 2: " + p2Kill;
         }
         break;
       }
@@ -261,6 +263,7 @@ function Component(image, width, height, x, y, player) {
 }
 
 // interval updates to game screen
+// TODO: re-run from start when all enemies have been destroyed or one player has died
 function updateGameScreen() {
     gameScreen.clear();
     playerOne.movePos();
@@ -280,7 +283,6 @@ function updateGameScreen() {
 }
 
 // move ship
-// TODO: require holding down button rather than just constant movement
 function handleInput(event) {
   const key = event.key
   if(event.type == 'keyup' && (key == 'a' || key == 'd')) playerOne.speed = 0;
