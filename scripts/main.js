@@ -176,10 +176,12 @@ function Enemy(image, width){
         if(lzr.shotBy == 'one'){
           lzr.y = -1000; //move far off screen
           p1Kill++;
+          document.getElementById('scorep1').innerHTML = "Player 1: " + p1Kill;
         }
         else {
           lzr.y = 1000; // move far off screen
           p2Kill++;
+          document.getElementById('scorep2').innerHTML = "Player 2: " + p2Kill;
         }
         break;
       }
