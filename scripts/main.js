@@ -12,6 +12,7 @@ let barrierBlockImg = 'img/barrierBlockImg.png'
 var playerOne;
 var playerTwo;
 var enemies;
+var enemiesRemaining = 16;
 var barriers;
 var enemyCountRow = 4;
 var enemyRows = 4;
@@ -22,6 +23,7 @@ var p2Lives = 3;
 var b = [];
 
 function launchGame() {
+
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x, ship1_y, "one");
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x, ship2_y, "two");
 
@@ -36,10 +38,11 @@ function launchGame() {
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
       enemies[x] = new Enemy(enemyImg);
+      // EML: ships can be killed by EITHER opponent
       if(i+1>enemyRows/2){
-        enemies[x].forPlayer = 'one';
+        //enemies[x].forPlayer = 'one';
       }else{
-        enemies[x].forPlayer = 'two';
+        //enemies[x].forPlayer = 'two';
       }
       if(i%2 == 0){
         enemies[x].dir = 'left'
@@ -68,6 +71,8 @@ function launchGame() {
     barriers[i] = new Barrier(ship_x+(i-6)*83, 500-75)
   }
 
+  alert("Get ready to attack...");
+
 }
 
 function BarrierBlock(x, y){
@@ -80,7 +85,6 @@ function BarrierBlock(x, y){
   this.update = function(){
     if(!this.hit){
       for (var i = 0; i < b.length; i++) {
-        //var tempy = b[i].shotBy.equals("two") ?
         var tempy = b[i].shotBy == "one" ? 50 : 0;
         if(b[i].x<this.x+10
           && b[i].x>this.x
@@ -151,7 +155,6 @@ function Bullet(x, y, shooter){
 
 
 function Enemy(image, width){
-  //// TODO: make ships only get hit by their specific ships lazers, not opponents
   this.x;
   this.y;
   this.ship_image = new Image();
@@ -163,7 +166,7 @@ function Enemy(image, width){
   this.change = false;
   this.dead = false;
   this.updown;
-  this.forPlayer = false;
+  //this.forPlayer = false;
   this.update = function (){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
@@ -171,8 +174,10 @@ function Enemy(image, width){
       //if the lazer is within the ships boundaries, that is a hit
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
           && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
-          && lzr.shotBy == this.forPlayer){
+          //&& lzr.shotBy == this.forPlayer
+        ){
         this.dead = true;
+        enemiesRemaining--;
         if(lzr.shotBy == 'one'){
           lzr.y = -1000; //move far off screen
           p1Kill++;
@@ -280,6 +285,46 @@ function updateGameScreen() {
     for (var i = 0; i < enemies.length; i++) {
       enemies[i].update();
     }
+
+    if(enemiesRemaining == 0) {
+        nextRound();
+    }
+}
+
+function nextRound() {
+  alert("Next round coming up!");
+  // reset the health of players
+  p1Lives = 3;
+  p2Lives = 3;
+  enemiesRemaining = 16;
+  gameScreen.clear();
+
+  // spawn new enemies?
+  enemies = [enemyCountRow * enemyRows];
+  enemyWidth = gameScreen.ctx.canvas.clientWidth/(enemyCountRow);
+  var starty = gameScreen.ctx.canvas.clientHeight;
+  x = 0;
+  for (var i = 0; i < enemyRows; i++) {
+    for (var j = 0; j < enemyCountRow; j++) {
+      enemies[x] = new Enemy(enemyImg);
+      if(i%2 == 0){
+        enemies[x].dir = 'left'
+      }else{
+        enemies[x].dir = 'right'
+      }
+      if(i<enemyRows/2){
+        enemies[x].updown = 'up';
+        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
+        enemies[x].y = starty/2-(i+1)*50;
+      }else{
+        enemies[x].updown = 'down';
+        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
+        enemies[x].y = starty/2+(i-2)*50;
+
+      }
+      x++;
+    }
+  }
 }
 
 // move ship
