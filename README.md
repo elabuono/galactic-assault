@@ -4,9 +4,9 @@ Welcome to the space-tacular battlefield! This arcade shooter pins two players i
 ## Database Setup
 To set up the database, go to the directory containing the docker-compose.yml file
 
-Run this command `docker-compose up -d`
+Run this command `docker-compose up -d` to build the database from the image and start it
 
-That should build the database from the image and start it
+After that, simply run `docker-compose stop` and `docker-compose start`
 
 To go into the database, run the command `mssql -u sa -p galexy2019!`
 
