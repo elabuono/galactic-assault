@@ -14,6 +14,8 @@ Once in, you can run `.databases` to view all of the databases
 
 Run `SELECT * FROM accounts.dbo.[User]` to see all of the current users
 
+To view q_table, run ` SELECT * FROM q_table.dbo.[Move]` This can be used to select AI move 
+
 To insert users from the commandline, run
 
 ```
