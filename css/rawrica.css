@@ -33,3 +33,6 @@ a {text-decoration: none;}
   border: 1px solid black;
   background-image: url('../img/gamebackground.jpg');
 }
+ #scoreboard {
+   display: inline-flex;
+ }
