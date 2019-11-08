@@ -38,12 +38,6 @@ function launchGame() {
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
       enemies[x] = new Enemy(enemyImg);
-      // EML: ships can be killed by EITHER opponent
-      if(i+1>enemyRows/2){
-        //enemies[x].forPlayer = 'one';
-      }else{
-        //enemies[x].forPlayer = 'two';
-      }
       if(i%2 == 0){
         enemies[x].dir = 'left'
       }else{
@@ -166,25 +160,25 @@ function Enemy(image, width){
   this.change = false;
   this.dead = false;
   this.updown;
-  //this.forPlayer = false;
   this.update = function (){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
       let lzr = b[i];
-      //if the lazer is within the ships boundaries, that is a hit
+      //if the lazer is active within the ships boundaries, that is a hit
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
           && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
-          //&& lzr.shotBy == this.forPlayer
-        ){
+          && (!lzr.hit)) {
         this.dead = true;
         enemiesRemaining--;
         if(lzr.shotBy == 'one'){
-          lzr.y = -1000; //move far off screen
+          lzr.hit = true;
+          lzr.y = -1000; //move far off screen and deactivate bullet
           p1Kill++;
           document.getElementById('scorep1').innerHTML = "Player 1: " + p1Kill;
         }
         else {
-          lzr.y = 1000; // move far off screen
+          lzr.y = 1000; // move far off screen and deactivate bullet
+          lzr.hit = true;
           p2Kill++;
           document.getElementById('scorep2').innerHTML = "Player 2: " + p2Kill;
         }
