@@ -160,8 +160,8 @@ function Enemy(image, width){
   this.change = false;
   this.dead = false;
   this.updown;
-  this.update = function (){
-    if(!this.dead){
+  this.update = function () {
+    if(!this.dead) {
     for (var i = 0; i < b.length; i++) {
       let lzr = b[i];
       //if the lazer is active within the ships boundaries, that is a hit
@@ -212,9 +212,26 @@ function Enemy(image, width){
       ctx = gameScreen.ctx;
       ctx.drawImage(this.ship_image,this.x,this.y,this.imageWidth,this.imageHeight);
 
+      // if the enemy hits the player's zone, cause damage and despawn
+      if(this.y >= ship1_y) {
+        this.despawn;
+        this.dead = true;
+        p1Lives--;
+        enemiesRemaining--;
+      }
+      if(this.y <= ship2_y) {
+        this.despawn;
+        this.dead = true;
+        p2Lives--;
+        enemiesRemaining--;
+      }
   }
-}
 
+}
+  this.despawn = function() {
+    ctx = gameScreen.ctx;
+    ctx.drawImage(this.ship_image,this.x,this.y,this.imageWidth,this.imageHeight);
+  }
 }
 // first component: the player's ship
 function Component(image, width, height, x, y, player) {
@@ -238,7 +255,7 @@ function Component(image, width, height, x, y, player) {
           if(this.player == "one")p1Lives--;
           else p2Lives--;
           b[i].x = 1000;
-
+          b[i].hit = true;
         }
     }
 
