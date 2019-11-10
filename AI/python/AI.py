@@ -24,14 +24,14 @@ class State:
         return ""#f"State(p2Lives={self.p2Lives} p2os={self.p2Pos} p1pos={self.p1Pos})"
 
 
-numberOfStates = 8100  # number of positions, lives, and
+numberOfStates = 12150  # number of positions, lives, and
 qtable = np.zeros((numberOfStates, 3)) # , dtype=(State, int)) #size of action_space times size of number of states
 stateNums = {}
 count = 0
 
 for w in range(45):
     for x in range(45):
-        for y in range(4):
+        for y in range(6):
             s = State(y,x,w)
             stateNums.update({s: count})
             count = count + 1
@@ -105,10 +105,10 @@ def calcReward(old, n, action, p2KillNew, p2KillOld):
     return reward
 
 
-for x in range(100): #totalEpochs):
+for x in range(2): #totalEpochs):
     driver = webdriver.Chrome()
-    driver.get("file:///Users/nickmasciandaro/CSCI/TestJS/galactic-assault/index.html")
-
+    driver.get("file:///Users/nickmasciandaro/CSCI/TestJS/galactic-assault/game.html")
+    driver.switch_to.alert.accept()
     isDone = driver.find_element_by_id('isDone').get_attribute("value")
     countFrame = 0
     isDone = "false"
@@ -150,6 +150,8 @@ for x in range(100): #totalEpochs):
         p1Pos = driver.find_element_by_id('p1Pos').get_attribute('value')
         isDone = driver.find_element_by_id('isDone').get_attribute("value")
 
+        print("Lives: "+str(p2Lives))
+
         newState = State(p2Lives, p2Pos, p1Pos)
         newState = getState(newState)
         print("p2KillNew: "+p2KillNew)
@@ -174,7 +176,12 @@ conn = pymssql.connect(user = 'sa', password = 'galexy2019!')
 cursor = conn.cursor()
 
 for x in range(numberOfStates):
-    cursor.execute('INSERT INTO q_table.dbo.[Move] (id, move) VALUES ('+str(x)+', '+str(np.argmax(qtable[x]))+');')
+    rew = -1
+    if(qtable[x, np.argmax(qtable[x])] == 0):
+        rew = str(rew)
+    else:
+        rew = str(np.argmax(qtable[x]))
+    cursor.execute('INSERT INTO q_table.dbo.[Move] (id, move) VALUES ('+str(x)+', '+str(rew)+');')
     #cursor.execute('REPLACE INTO q_table.dbo.[Move] (id, move) VALUES(' +str(x) +','+str(np.argmax(qtable[x]))+');')
 
 conn.commit()
