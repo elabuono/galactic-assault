@@ -12,13 +12,14 @@ let barrierBlockImg = 'img/barrierBlockImg.png'
 var playerOne;
 var playerTwo;
 var enemies;
+var enemiesRemaining = 16;
 var barriers;
 var enemyCountRow = 4;
 var enemyRows = 4;
 var p1Kill = 0;
 var p2Kill = 0;
-var p1Lives = 3;
-var p2Lives = 3;
+var p1Lives = 5;
+var p2Lives = 5;
 var b = [];
 //
 function launchGame() {
@@ -36,10 +37,11 @@ function launchGame() {
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
       enemies[x] = new Enemy(enemyImg);
+      // EML: ships can be killed by EITHER opponent
       if(i+1>enemyRows/2){
-        enemies[x].forPlayer = 'one';
+        //enemies[x].forPlayer = 'one';
       }else{
-        enemies[x].forPlayer = 'two';
+        //enemies[x].forPlayer = 'two';
       }
       if(i%2 == 0){
         enemies[x].dir = 'left'
@@ -67,8 +69,9 @@ function launchGame() {
   for (var i = 6; i <12 ; i++) {
     barriers[i] = new Barrier(ship_x+(i-6)*83, 500-75)
   }
-    //requestAnimationFrame(updateGameScreen);
-    //setInterval(updateGameScreen(), 100);
+
+  alert("Get ready to attack...");
+
 }
 
 function BarrierBlock(x, y){
@@ -152,7 +155,6 @@ function Bullet(x, y, shooter){
 
 
 function Enemy(image, width){
-  //// TODO: make ships only get hit by their specific ships lazers, not opponents
   this.x;
   this.y;
   this.ship_image = new Image();
@@ -164,23 +166,27 @@ function Enemy(image, width){
   this.change = false;
   this.dead = false;
   this.updown;
-  this.forPlayer = false;
+  //this.forPlayer = false;
   this.update = function (){
     if(!this.dead){
     for (var i = 0; i < b.length; i++) {
       let lzr = b[i];
       //if the lazer is within the ships boundaries, that is a hit
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
-          && (lzr.y<this.y+10 && lzr.y>this.y-this.imageHeight/2+25)
-          && lzr.shotBy == this.forPlayer){
+          && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
+          //&& lzr.shotBy == this.forPlayer
+        ){
         this.dead = true;
+        enemiesRemaining--;
         if(lzr.shotBy == 'one'){
           lzr.y = -1000; //move far off screen
           p1Kill++;
+          document.getElementById('scorep1').innerHTML = "Player 1: " + p1Kill;
         }
         else {
           lzr.y = 1000; // move far off screen
           p2Kill++;
+          document.getElementById('scorep2').innerHTML = "Player 2: " + p2Kill;
         }
         break;
       }
@@ -262,6 +268,7 @@ function Component(image, width, height, x, y, player) {
 }
 
 // interval updates to game screen
+// TODO: re-run from start when all enemies have been destroyed or one player has died
 function updateGameScreen() {
     document.getElementById('p2Kill').value = p2Kill;
     document.getElementById('p2Lives').value = p2Lives;
@@ -284,10 +291,49 @@ function updateGameScreen() {
     for (var i = 0; i < enemies.length; i++) {
       enemies[i].update();
     }
+
+    if(enemiesRemaining == 0 || (p1Lives == 0 || p2Lives == 0)) {
+        nextRound();
+    }
+}
+
+function nextRound() {
+  alert("Next round coming up!");
+  // reset the health of players
+  p1Lives = 5;
+  p2Lives = 5;
+  enemiesRemaining = 16;
+  gameScreen.clear();
+
+  // spawn new enemies
+  enemies = [enemyCountRow * enemyRows];
+  enemyWidth = gameScreen.ctx.canvas.clientWidth/(enemyCountRow);
+  var starty = gameScreen.ctx.canvas.clientHeight;
+  x = 0;
+  for (var i = 0; i < enemyRows; i++) {
+    for (var j = 0; j < enemyCountRow; j++) {
+      enemies[x] = new Enemy(enemyImg);
+      if(i%2 == 0){
+        enemies[x].dir = 'left'
+      }else{
+        enemies[x].dir = 'right'
+      }
+      if(i<enemyRows/2){
+        enemies[x].updown = 'up';
+        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
+        enemies[x].y = starty/2-(i+1)*50;
+      }else{
+        enemies[x].updown = 'down';
+        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
+        enemies[x].y = starty/2+(i-2)*50;
+
+      }
+      x++;
+    }
+  }
 }
 
 // move ship
-// TODO: require holding down button rather than just constant movement
 function handleInput(event) {
   const key = event.key;
   if(event.type == 'keyup' && (key == 'a' || key == 'd')) playerOne.speed = 0;
@@ -306,6 +352,7 @@ function handleInput(event) {
         case 'l':
           playerTwo.speed = 1;
           break;
+          // TODO: change spacebar to s key, matching player 2's controls
         case ' ':
           if(event.type == 'keyup') b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
           break;
