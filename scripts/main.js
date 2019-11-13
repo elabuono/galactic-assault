@@ -38,12 +38,6 @@ function launchGame() {
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
       enemies[x] = new Enemy(enemyImg);
-      // EML: ships can be killed by EITHER opponent
-      if(i+1>enemyRows/2){
-        //enemies[x].forPlayer = 'one';
-      }else{
-        //enemies[x].forPlayer = 'two';
-      }
       if(i%2 == 0){
         enemies[x].dir = 'left'
       }else{
@@ -174,7 +168,6 @@ function Enemy(image, width){
       //if the lazer is within the ships boundaries, that is a hit
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
           && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
-          //&& lzr.shotBy == this.forPlayer
         ){
         this.dead = true;
         enemiesRemaining--;
@@ -235,14 +228,19 @@ function Component(image, width, height, x, y, player) {
   this.update = function() {
     //check to see if hit
     for (var i = 0; i < b.length; i++) {
-      //var tempy = b[i].shotBy.equals("two") ?
       var tempy = b[i].shotBy == "one" ? 50 : 0;
       if(b[i].x<this.x+this.width
         && b[i].x>this.x
         && b[i].y< this.y+this.height/2
         && b[i].y> this.y){
-          if(this.player == "one")p1Lives--;
-          else p2Lives--;
+          if(this.player == "one") {
+            p1Lives--;
+            document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
+          }
+          else{
+             p2Lives--;
+             document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
+           }
           b[i].x = 1000;
 
         }
@@ -268,7 +266,6 @@ function Component(image, width, height, x, y, player) {
 }
 
 // interval updates to game screen
-// TODO: re-run from start when all enemies have been destroyed or one player has died
 function updateGameScreen() {
     gameScreen.clear();
     playerOne.movePos();
