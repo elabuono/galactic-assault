@@ -167,11 +167,7 @@ function Enemy(image, width){
       //if the lazer is active within the ships boundaries, that is a hit
       if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
           && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
-<<<<<<< HEAD
-        ){
-=======
           && (!lzr.hit)) {
->>>>>>> master
         this.dead = true;
         enemiesRemaining--;
         if(lzr.shotBy == 'one'){
@@ -221,12 +217,14 @@ function Enemy(image, width){
         this.despawn;
         this.dead = true;
         p1Lives--;
+        document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
         enemiesRemaining--;
       }
       if(this.y <= ship2_y) {
         this.despawn;
         this.dead = true;
         p2Lives--;
+        document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
         enemiesRemaining--;
       }
   }
