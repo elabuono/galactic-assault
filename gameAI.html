@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="./css/rawrica.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+  <title>Galactic Assault Game</title>
+</head>
+<body onload="launchGameAi()">
+  <div id="top_bar">
+      <h1>galactic assault</h1>
+  </div>
+  <div id="the_game">
+    <main>
+      <canvas id="gamescreenAi"></canvas>
+    </main>
+    <input id = 'p2Kill'/>
+    <input id = 'p2Lives'/>
+    <input id = 'isDone'/ />
+    <input id='p1Pos' />
+    <input id='p2Pos' />
+    </p>
+    <div id="scoreboard">
+      <p id="scorep1" style="padding-right:30px">Player 1: 0</p>
+      <p id="scorep2" style="padding-left:30px">Player 2: 0</p>
+    </div>
+  </div>
+  <!--Add main menu stuff here-->
+  <script src="scripts/mainAi.js"></script>
+  </body>
+</html>
