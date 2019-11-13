@@ -313,6 +313,8 @@ function nextRound() {
   // reset the health of players
   p1Lives = 5;
   p2Lives = 5;
+  document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
+  document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
   enemiesRemaining = 16;
   gameScreen.clear();
 
