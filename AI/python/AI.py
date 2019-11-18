@@ -36,7 +36,8 @@ for w in range(45):
             stateNums.update({s: count})
             count = count + 1
 
-print(count)
+
+
 
 def getStateNum(s):
     return stateNums.get(s)
@@ -76,6 +77,8 @@ def action_space(i):
 
 #f = open("movement.txt", "w+")
 #f.truncate(0)
+print(getStateNum(State(1, 2, 3)))
+
 alpha = 0.1 #Learning rate
 gamma = 0.9
 epsilon = 0.2

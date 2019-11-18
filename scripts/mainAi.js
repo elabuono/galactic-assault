@@ -21,6 +21,8 @@ var p2Kill = 0;
 var p1Lives = 5;
 var p2Lives = 5;
 var b = [];
+var q_table_input
+var qmap = new Map();
 
 var gameScreen = {
   canvas: document.getElementById('gamescreenAi'),
@@ -51,6 +53,30 @@ function launchGameAi() {
   x = 0;
 
   //ai setup
+  var http = new XMLHttpRequest();
+  http.open("GET", "http://localhost:5000");
+  http.send();
+  http.onreadystatechange = (e) => {
+    q_table_input = http.responseText;
+    console.log(q_table_input);
+  }
+  var c = 0;
+  for(var k1=0; k1<45; k1++){
+    for(var k2 = 0; k2<45; k2++){
+      for(var l1 = 0; l1<6; l1++){
+        qmap.set(l1+","+k2+","+k1, c);
+        c++;
+      }
+    }
+  }
+  console.log("HERE")
+
+  console.log(qmap)
+  console.log(qmap.get("1,2,3"));
+
+  //parse it
+  //var jobject = JSON.parse(q_table_input)
+  //console.log(jobject)
 
   //aiEnd
 
@@ -286,7 +312,28 @@ function updateGameScreen() {
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
-    playerTwo.speed = 0; //MAKE CALL;
+    if(countt % 50 == 0){
+      var statenum = qmap.get("".concat(p2Lives, ",", playerTwo.x / 10, ",", playerOne.x / 10));
+      console.log(statenum);
+      var ind = q_table_input.indexOf(statenum);
+      var move  = q_table_input.substring(ind);
+      move = move.substring(move.indexOf("move")+6, move.indexOf("}"));
+      console.log(move)
+
+      if(move == "-1"){
+        move = Math.floor(Math.random()*3).toString();
+      }
+
+      if(move == "0"){
+        playerTwo.speed = -1;
+      } else if(move == "1"){
+        playerTwo.speed = 1;
+      }else if (move == "2"){
+        playerTwo.speed = 0;
+        b[b.length] = new Bullet(playerTwo.x + playerTwo.width / 2, playerTwo.y + playerTwo.height / 2, "two");
+      }
+    }
+    //playerTwo.speed = 0; //MAKE CALL;
     playerTwo.movePos();
     playerTwo.update();
     for (var i = 0; i < barriers.length; i++) {
