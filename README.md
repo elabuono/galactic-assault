@@ -1,5 +1,5 @@
 # Galactic Assault
-Welcome to the space-tacular battlefield! This arcade shooter pins two players in head-to-head combat.
+Welcome to the space-tacular battlefield! This arcade shooter pins two spaceships in head-to-head combat against aliens. There are two gamemodes: player versus player, and player versus AI.
 
 ## Database Setup
 To set up the database, go to the directory containing the docker-compose.yml file
@@ -25,7 +25,7 @@ EXEC accounts.dbo.uspAddUser\
 ```
 
 ## Gameplay
-Player 1 (bottom player): A moves left, D moves right. Spacebar shoots lazers.
+Player 1 (bottom player): A moves left, D moves right. S shoots lazers.
 
 Player 2 (top player): J moves left, L moves right. K shoots lazers.
 
