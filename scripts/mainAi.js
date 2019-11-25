@@ -63,16 +63,12 @@ function launchGameAi() {
   var c = 0;
   for(var k1=0; k1<45; k1++){
     for(var k2 = 0; k2<45; k2++){
-      for(var l1 = 0; l1<6; l1++){
-        qmap.set(l1+","+k2+","+k1, c);
+        qmap.set(k2+","+k1, c);
         c++;
-      }
     }
   }
   console.log("HERE")
 
-  console.log(qmap)
-  console.log(qmap.get("1,2,3"));
 
   //parse it
   //var jobject = JSON.parse(q_table_input)
@@ -312,8 +308,8 @@ function updateGameScreen() {
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
-    if(countt % 50 == 0){
-      var statenum = qmap.get("".concat(p2Lives, ",", playerTwo.x / 10, ",", playerOne.x / 10));
+    if(countt % 10 == 0){
+      var statenum = qmap.get("".concat(playerTwo.x / 10, ",", playerOne.x / 10));
       console.log(statenum);
       var ind = q_table_input.indexOf(statenum);
       var move  = q_table_input.substring(ind);

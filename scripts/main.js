@@ -364,7 +364,7 @@ function handleInput(event) {
           playerTwo.speed = 1;
           break;
           // TODO: change spacebar to s key, matching player 2's controls
-        case ' ':
+        case ' ' :
           if(event.type == 'keyup') b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
           break;
         case 'k':
