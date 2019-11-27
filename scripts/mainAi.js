@@ -21,8 +21,28 @@ var p2Kill = 0;
 var p1Lives = 5;
 var p2Lives = 5;
 var b = [];
-//
-function launchGame() {
+var q_table_input
+var qmap = new Map();
+
+var gameScreen = {
+  canvas: document.getElementById('gamescreenAi'),
+  start: function () {
+    this.canvas.width = 500;
+    this.canvas.height = 500;
+    this.ctx = this.canvas.getContext('2d');
+    this.interval = setInterval(updateGameScreen)
+    document.addEventListener('keydown', handleInput)
+    document.addEventListener('keyup', handleInput)
+  },
+  clear: function () {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  },
+  stop: function () {
+    clearInterval(this.interval)
+  }
+}
+
+function launchGameAi() {
   playerOne = new Component(playerOneImg, ship_size, ship_size, ship_x+240, ship1_y, "one");
   playerTwo = new Component(playerTwoImg, ship_size, ship_size,ship_x+240, ship2_y, "two");
 
@@ -32,11 +52,34 @@ function launchGame() {
   var starty = gameScreen.ctx.canvas.clientHeight;
   x = 0;
 
+  //ai setup
+  var http = new XMLHttpRequest();
+  http.open("GET", "http://localhost:5000");
+  http.send();
+  http.onreadystatechange = (e) => {
+    q_table_input = http.responseText;
+    console.log(q_table_input);
+  }
+  var c = 0;
+  for(var k1=0; k1<45; k1++){
+    for(var k2 = 0; k2<45; k2++){
+        qmap.set(k2+","+k1, c);
+        c++;
+    }
+  }
+  console.log("HERE")
+
 // Create enemies
 
   for (var i = 0; i < enemyRows; i++) {
     for (var j = 0; j < enemyCountRow; j++) {
       enemies[x] = new Enemy(enemyImg);
+      // EML: ships can be killed by EITHER opponent
+      if(i+1>enemyRows/2){
+        //enemies[x].forPlayer = 'one';
+      }else{
+        //enemies[x].forPlayer = 'two';
+      }
       if(i%2 == 0){
         enemies[x].dir = 'left'
       }else{
@@ -113,23 +156,7 @@ function Barrier(x, y){
 }
 
 // utilize canvas from html, set interval for components
-var gameScreen = {
-  canvas : document.getElementById('gamescreen'),
-  start : function() {
-    this.canvas.width = 500;
-    this.canvas.height = 500;
-    this.ctx = this.canvas.getContext('2d');
-    this.interval = setInterval(updateGameScreen)
-    document.addEventListener('keydown', handleInput)
-    document.addEventListener('keyup', handleInput)
-  },
-  clear : function() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  },
-  stop : function() {
-    clearInterval(this.interval)
-  }
-}
+
 
 function Bullet(x, y, shooter){
   this.x = x;
@@ -148,7 +175,7 @@ function Bullet(x, y, shooter){
 }
 
 
-function Enemy(image, width){
+function Enemy(image, width) {
   this.x;
   this.y;
   this.ship_image = new Image();
@@ -161,80 +188,81 @@ function Enemy(image, width){
   this.dead = false;
   this.updown;
   this.update = function () {
-    if(!this.dead) {
-    for (var i = 0; i < b.length; i++) {
-      let lzr = b[i];
-      //if the lazer is active within the ships boundaries, that is a hit
-      if((lzr.x>this.x && lzr.x < this.x+this.imageWidth)
-          && (lzr.y<this.y && lzr.y>this.y-this.imageHeight/2)
-          && (!lzr.hit)) {
-        this.dead = true;
-        enemiesRemaining--;
-        if(lzr.shotBy == 'one'){
-          lzr.hit = true;
-          lzr.y = -1000; //move far off screen and deactivate bullet
-          p1Kill++;
-          document.getElementById('scorep1').innerHTML = "Player 1: " + p1Kill;
+    if (!this.dead) {
+      for (var i = 0; i < b.length; i++) {
+        let lzr = b[i];
+        //if the lazer is active within the ships boundaries, that is a hit
+        if ((lzr.x > this.x && lzr.x < this.x + this.imageWidth) &&
+          (lzr.y < this.y && lzr.y > this.y - this.imageHeight / 2) &&
+          (!lzr.hit)) {
+          this.dead = true;
+          enemiesRemaining--;
+          if (lzr.shotBy == 'one') {
+            lzr.hit = true;
+            lzr.y = -1000; //move far off screen and deactivate bullet
+            p1Kill++;
+            document.getElementById('scorep1').innerHTML = "Player 1: " + p1Kill;
+          } else {
+            lzr.y = 1000; // move far off screen and deactivate bullet
+            lzr.hit = true;
+            p2Kill++;
+            document.getElementById('scorep2').innerHTML = "Player 2: " + p2Kill;
+          }
+          break;
         }
-        else {
-          lzr.y = 1000; // move far off screen and deactivate bullet
-          lzr.hit = true;
-          p2Kill++;
-          document.getElementById('scorep2').innerHTML = "Player 2: " + p2Kill;
-        }
-        break;
       }
-    }
-    this.inc++;
-    //Move the enemies every 50 refreshes
-      if(this.inc>25){
-        if ((this.x>=500-this.imageWidth || this.x<=0) && !this.change) {
+      this.inc++;
+      //Move the enemies every 50 refreshes
+      if (this.inc > 25) {
+        if ((this.x >= 500 - this.imageWidth || this.x <= 0) && !this.change) {
           //descides whether the ship was moving up or down
-          if(this.updown == 'up')this.y -= this.imageWidth/2;
-          else this.y += this.imageWidth/2;
-          if(this.dir == 'left'){
+          if (this.updown == 'up') this.y -= this.imageWidth / 2;
+          else this.y += this.imageWidth / 2;
+          if (this.dir == 'left') {
             this.dir = "right"
-          }else{
+          } else {
             this.dir = 'left'
           }
           this.change = true; //if changed, allow show to move over so it doesnt get moved down again
-        }else{
+        } else {
           //moves the ship right or left accordingly
-          if(this.dir == "right"){
-            this.x += this.imageWidth/4;
-          }else{
-            this.x-= this.imageWidth/4;
+          if (this.dir == "right") {
+            this.x += this.imageWidth / 4;
+          } else {
+            this.x -= this.imageWidth / 4;
           }
           this.change = false;
         }
         this.inc = 0;
       }
       ctx = gameScreen.ctx;
-      ctx.drawImage(this.ship_image,this.x,this.y,this.imageWidth,this.imageHeight);
+      ctx.drawImage(this.ship_image, this.x, this.y, this.imageWidth, this.imageHeight);
 
       // if the enemy hits the player's zone, cause damage and despawn
-      if(this.y >= ship1_y) {
+      if (this.y >= ship1_y) {
         this.despawn;
         this.dead = true;
         p1Lives--;
         document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
         enemiesRemaining--;
       }
-      if(this.y <= ship2_y) {
+      if (this.y <= ship2_y) {
         this.despawn;
         this.dead = true;
         p2Lives--;
         document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
         enemiesRemaining--;
       }
-  }
+    }
 
-}
-  this.despawn = function() {
+  }
+  this.despawn = function () {
     ctx = gameScreen.ctx;
-    ctx.drawImage(this.ship_image,this.x,this.y,this.imageWidth,this.imageHeight);
+    ctx.drawImage(this.ship_image, this.x, this.y, this.imageWidth, this.imageHeight);
   }
 }
+
+
 // first component: the player's ship
 function Component(image, width, height, x, y, player) {
   this.width = width;
@@ -245,51 +273,74 @@ function Component(image, width, height, x, y, player) {
   this.ship_image = new Image();
   this.ship_image.src = image;
   this.player = player
-  this.update = function() {
-    //check to see if hit
-    for (var i = 0; i < b.length; i++) {
-      var tempy = b[i].shotBy == "one" ? 50 : 0;
-      if(b[i].x<this.x+this.width
-        && b[i].x>this.x
-        && b[i].y< this.y+this.height/2
-        && b[i].y> this.y){
-          if(this.player == "one") {
+  this.update = function () {
+      //check to see if hit
+      for (var i = 0; i < b.length; i++) {
+        var tempy = b[i].shotBy == "one" ? 50 : 0;
+        if (b[i].x < this.x + this.width &&
+          b[i].x > this.x &&
+          b[i].y < this.y + this.height / 2 &&
+          b[i].y > this.y) {
+          if (this.player == "one") {
             p1Lives--;
             document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
+          } else {
+            p2Lives--;
+            document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
           }
-          else{
-             p2Lives--;
-             document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
-           }
           b[i].x = 1000;
           b[i].hit = true;
         }
-    }
+      }
 
-    if(!((this.player == 'one' && p1Lives<=0)||(this.player == 'two' && p2Lives<=0))){
-      ctx = gameScreen.ctx;
-      ctx.drawImage(this.ship_image, this.x, this.y, this.width, this.height);
-    }
-  },
-  this.movePos = function() {
-    if(this.x >= 10 && this.speed > 0) {
-      if(this.x < 440) {
-        this.x += this.speed;
+      if (!((this.player == 'one' && p1Lives <= 0) || (this.player == 'two' && p2Lives <= 0))) {
+        ctx = gameScreen.ctx;
+        ctx.drawImage(this.ship_image, this.x, this.y, this.width, this.height);
+      }
+    },
+    this.movePos = function () {
+      if (this.x >= 10 && this.speed > 0) {
+        if (this.x < 440) {
+          this.x += this.speed;
+        }
+      }
+      if (this.x <= 440 && this.speed < 0) {
+        if (this.x > 10) {
+          this.x += this.speed;
+        }
       }
     }
-    if(this.x <= 440 && this.speed < 0) {
-      if(this.x > 10) {
-        this.x += this.speed;
-      }
-    }
-  }
 }
-
+var countt = 0;
 // interval updates to game screen
+// TODO: re-run from start when all enemies have been destroyed or one player has died
 function updateGameScreen() {
+  countt++;
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
+    if(countt % 20 == 0){
+      var statenum = qmap.get("".concat(playerTwo.x / 10, ",", playerOne.x / 10));
+      console.log(statenum);
+      var ind = q_table_input.indexOf(statenum);
+      var move  = q_table_input.substring(ind);
+      move = move.substring(move.indexOf("move")+6, move.indexOf("}"));
+      console.log(move)
+
+      if(move == "-1"){
+        move = Math.floor(Math.random()*3).toString();
+      }
+
+      if(move == "0"){
+        playerTwo.speed = -1;
+      } else if(move == "1"){
+        playerTwo.speed = 1;
+      }else if (move == "2"){
+        playerTwo.speed = 0;
+        b[b.length] = new Bullet(playerTwo.x + playerTwo.width / 2, playerTwo.y + playerTwo.height / 2, "two");
+      }
+    }
+    //playerTwo.speed = 0; //MAKE CALL;
     playerTwo.movePos();
     playerTwo.update();
     for (var i = 0; i < barriers.length; i++) {
@@ -349,6 +400,7 @@ function nextRound() {
 // move ship
 function handleInput(event) {
   const key = event.key;
+
   if(event.type == 'keyup' && (key == 'a' || key == 'd')) playerOne.speed = 0;
     else if (event.type == 'keyup' && (key == 'j' || key == 'l')) playerTwo.speed = 0;
     else{

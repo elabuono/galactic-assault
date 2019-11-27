@@ -2,8 +2,8 @@ version: "3.2"
 services:
 
   sql-server-db:
-    container_name: galactic_assault_db_container
-    image: nmasciandaro/galactic_assault_db:latest
+    container_name: trained_ai_galactic_assault_container
+    image: nmasciandaro/trained_ai_galactic_assault:latest
     ports:
       - "1433:1433"
     environment:

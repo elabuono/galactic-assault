@@ -64,8 +64,6 @@ function launchGame() {
     barriers[i] = new Barrier(ship_x+(i-6)*83, 500-75)
   }
 
-  alert("Get ready to attack...");
-
 }
 
 function BarrierBlock(x, y){
@@ -217,14 +215,12 @@ function Enemy(image, width){
         this.despawn;
         this.dead = true;
         p1Lives--;
-        document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
         enemiesRemaining--;
       }
       if(this.y <= ship2_y) {
         this.despawn;
         this.dead = true;
         p2Lives--;
-        document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
         enemiesRemaining--;
       }
   }
@@ -248,19 +244,14 @@ function Component(image, width, height, x, y, player) {
   this.update = function() {
     //check to see if hit
     for (var i = 0; i < b.length; i++) {
+      //var tempy = b[i].shotBy.equals("two") ?
       var tempy = b[i].shotBy == "one" ? 50 : 0;
       if(b[i].x<this.x+this.width
         && b[i].x>this.x
         && b[i].y< this.y+this.height/2
         && b[i].y> this.y){
-          if(this.player == "one") {
-            p1Lives--;
-            document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
-          }
-          else{
-             p2Lives--;
-             document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
-           }
+          if(this.player == "one")p1Lives--;
+          else p2Lives--;
           b[i].x = 1000;
           b[i].hit = true;
         }
@@ -286,7 +277,14 @@ function Component(image, width, height, x, y, player) {
 }
 
 // interval updates to game screen
+// TODO: re-run from start when all enemies have been destroyed or one player has died
 function updateGameScreen() {
+    document.getElementById('p2Kill').value = p2Kill;
+    document.getElementById('p2Lives').value = p2Lives;
+    enemyTotal = enemyRows*enemyCountRow/2;
+    document.getElementById('isDone').value = (p2Lives <= 0)||(p1Lives<=0) ? true:false;
+    document.getElementById('p1Pos').value = Math.round(playerOne.x/10);
+    document.getElementById('p2Pos').value = Math.round(playerTwo.x/10); //86 total positions
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
@@ -302,48 +300,6 @@ function updateGameScreen() {
     for (var i = 0; i < enemies.length; i++) {
       enemies[i].update();
     }
-
-    if(enemiesRemaining == 0 || (p1Lives == 0 || p2Lives == 0)) {
-        nextRound();
-    }
-}
-
-function nextRound() {
-  alert("Next round coming up!");
-  // reset the health of players
-  p1Lives = 5;
-  p2Lives = 5;
-  document.getElementById('healthp1').innerHTML = "Player 1 HP: " + p1Lives;
-  document.getElementById('healthp2').innerHTML = "Player 2 HP: " + p2Lives;
-  enemiesRemaining = 16;
-  gameScreen.clear();
-
-  // spawn new enemies
-  enemies = [enemyCountRow * enemyRows];
-  enemyWidth = gameScreen.ctx.canvas.clientWidth/(enemyCountRow);
-  var starty = gameScreen.ctx.canvas.clientHeight;
-  x = 0;
-  for (var i = 0; i < enemyRows; i++) {
-    for (var j = 0; j < enemyCountRow; j++) {
-      enemies[x] = new Enemy(enemyImg);
-      if(i%2 == 0){
-        enemies[x].dir = 'left'
-      }else{
-        enemies[x].dir = 'right'
-      }
-      if(i<enemyRows/2){
-        enemies[x].updown = 'up';
-        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
-        enemies[x].y = starty/2-(i+1)*50;
-      }else{
-        enemies[x].updown = 'down';
-        enemies[x].x = j*enemyWidth+enemyWidth/enemyCountRow;
-        enemies[x].y = starty/2+(i-2)*50;
-
-      }
-      x++;
-    }
-  }
 }
 
 // move ship
@@ -366,7 +322,7 @@ function handleInput(event) {
           playerTwo.speed = 1;
           break;
           // TODO: change spacebar to s key, matching player 2's controls
-        case 's':
+        case ' ':
           if(event.type == 'keyup') b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
           break;
         case 'k':
