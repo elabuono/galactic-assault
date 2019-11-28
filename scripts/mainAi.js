@@ -61,8 +61,8 @@ function launchGameAi() {
     console.log(q_table_input);
   }
   var c = 0;
-  for(var k1=0; k1<45; k1++){
-    for(var k2 = 0; k2<45; k2++){
+  for(var k1=0; k1<23; k1++){
+    for(var k2 = 0; k2<23; k2++){
         qmap.set(k2+","+k1, c);
         c++;
     }
@@ -320,14 +320,15 @@ function updateGameScreen() {
     playerOne.movePos();
     playerOne.update();
     if(countt % 20 == 0){
-      var statenum = qmap.get("".concat(playerTwo.x / 10, ",", playerOne.x / 10));
+      var statenum = qmap.get("".concat(Math.floor(playerTwo.x / 20), ",", Math.floor(playerOne.x / 20)));
+      console.log("".concat(Math.floor(playerTwo.x / 20), ",", Math.floor(playerOne.x / 20)))
       console.log(statenum);
       var ind = q_table_input.indexOf(statenum);
       var move  = q_table_input.substring(ind);
       move = move.substring(move.indexOf("move")+6, move.indexOf("}"));
       console.log(move)
 
-      if(move == "-1"){
+      if(move == "-1" || Math.random() < .15){
         move = Math.floor(Math.random()*3).toString();
       }
 

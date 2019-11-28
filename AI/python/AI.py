@@ -23,13 +23,13 @@ class State:
         return ""#f"State( p2os={self.p2Pos} p1pos={self.p1Pos})"
 
 
-numberOfStates = 2025  # number of positions, lives, and
+numberOfStates = 529  # number of positions, lives, and
 qtable = np.zeros((numberOfStates, 3)) # , dtype=(State, int)) #size of action_space times size of number of states
 stateNums = {}
 count = 0
 
-for w in range(45):
-    for x in range(45):
+for w in range(23):
+    for x in range(23):
             s = State(x,w)
             stateNums.update({s: count})
             count = count + 1
@@ -41,7 +41,7 @@ def getStateNum(s):
 def press(x):
     keyboard.press(x)
     keyboard.press(action_space_user(random.randint(0, 2)))
-    time.sleep(.2)
+    time.sleep(.1)
     keyboard.release(action_space_user(random.randint(0, 2)))
     keyboard.release(x)
     if x == 'j':

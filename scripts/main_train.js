@@ -283,8 +283,8 @@ function updateGameScreen() {
     document.getElementById('p2Lives').value = p2Lives;
     enemyTotal = enemyRows*enemyCountRow/2;
     document.getElementById('isDone').value = (p2Lives <= 0)||(p1Lives<=0) ? true:false;
-    document.getElementById('p1Pos').value = Math.round(playerOne.x/10);
-    document.getElementById('p2Pos').value = Math.round(playerTwo.x/10); //86 total positions
+    document.getElementById('p1Pos').value = Math.round(playerOne.x/20);
+    document.getElementById('p2Pos').value = Math.round(playerTwo.x/20); //86 total positions
     gameScreen.clear();
     playerOne.movePos();
     playerOne.update();
