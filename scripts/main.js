@@ -335,6 +335,12 @@ function nextRound() {
   enemiesRemaining = 16;
   gameScreen.clear();
 
+  // remove bullets
+  for (var i = 0; i < b.length; i++) {
+        b[i].x = 1000;
+        b[i].hit = true;
+      }
+
   // spawn new enemies
   enemies = [enemyCountRow * enemyRows];
   enemyWidth = gameScreen.ctx.canvas.clientWidth/(enemyCountRow);
@@ -382,7 +388,6 @@ function handleInput(event) {
         case 'l':
           playerTwo.speed = 1;
           break;
-          // TODO: change spacebar to s key, matching player 2's controls
         case 's':
           if(event.type == 'keyup') b[b.length] = new Bullet (playerOne.x+playerOne.width/2,playerOne.y-playerOne.height/2, "one");
           break;
