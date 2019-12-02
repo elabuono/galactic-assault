@@ -20,6 +20,7 @@ var p1Kill = 0;
 var p2Kill = 0;
 var p1Lives = 5;
 var p2Lives = 5;
+var roundsLeft = 5;
 var b = [];
 //
 function launchGame() {
@@ -304,12 +305,28 @@ function updateGameScreen() {
     }
 
     if(enemiesRemaining == 0 || (p1Lives == 0 || p2Lives == 0)) {
-        nextRound();
+        if(roundsLeft > 1) {
+          nextRound();
+        } else {
+          endGame();
+        }
     }
+}
+
+function endGame() {
+  if(p1Kill > p2Kill) {
+    alert("Player 1 wins!!!");
+  } else if(p2Kill > p1Kill) {
+    alert("Player 2 wins!!!");
+  } else {
+    alert("Tie!");
+  }
+  gameScreen.clear();
 }
 
 function nextRound() {
   alert("Next round coming up!");
+  roundsLeft--;
   // reset the health of players
   p1Lives = 5;
   p2Lives = 5;
