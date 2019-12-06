@@ -103,7 +103,8 @@ def calcReward(old, n, action, p2KillNew, p2KillOld, p2LivesNew, p2LivesOld):
     return reward
 
 
-for x in range(100): #totalEpochs):
+for x in range(1000): #totalEpochs):
+    print("THIS IS EPOCH",x)
     driver = webdriver.Chrome()
     driver.get("file:///Users/nickmasciandaro/CSCI/TestJS/galactic-assault/game.html")
     #driver.switch_to.alert.accept()
@@ -123,6 +124,7 @@ for x in range(100): #totalEpochs):
         countFrame += 1
         rand = random.random()
 
+        p2LivesOld = p2LivesNew
         p2KillOld = p2KillNew
         oldState = getState(newState)
 
@@ -139,10 +141,6 @@ for x in range(100): #totalEpochs):
                 action = press(c)
                 print("SMART "+c+"REWARD "+str(np.max(qtable[getStateNum(oldState)]))+"PRESSED"+c+"\n")
 
-            #SmartMove exploit what is known //action = np.argmax(q_table[state])
-        #press(action_space_user(random.randint(0, 2)))
-
-        #get current state elements of game board (nextState, reward, done)
         p2LivesNew = driver.find_element_by_id("p2Lives").get_attribute('value')
         p2KillNew = driver.find_element_by_id('p2Kill').get_attribute('value')
         p2Pos = driver.find_element_by_id('p2Pos').get_attribute('value')
@@ -161,13 +159,6 @@ for x in range(100): #totalEpochs):
         qtable[getStateNum(oldState), action] = qtable[getStateNum(oldState), action] + alpha * (reward+gamma*np.max(qtable[getStateNum(newState),:])- qtable[getStateNum(oldState), action])
 
         print(qtable[getStateNum(oldState)])
-        #oldvalue = q_table[state, action] //get the old value of the table
-        #next_max = np.max(q_table[next_state])
-        #new_value = (1 - alpha) * old_value + alpha * (reward + gamma * next_max)
-        #q_table[state, action] = new_value
-        #if a very low reward, make a penalty
-        #move to next state
-
     driver.close()
 
 conn = pymssql.connect(user = 'sa', password = 'galexy2019!')
