@@ -321,12 +321,9 @@ function updateGameScreen() {
     playerOne.update();
     if(countt % 20 == 0){
       var statenum = qmap.get("".concat(Math.floor(playerTwo.x / 20), ",", Math.floor(playerOne.x / 20)));
-      console.log("".concat(Math.floor(playerTwo.x / 20), ",", Math.floor(playerOne.x / 20)))
-      console.log(statenum);
       var ind = q_table_input.indexOf(statenum);
       var move  = q_table_input.substring(ind);
       move = move.substring(move.indexOf("move")+6, move.indexOf("}"));
-      console.log(move)
 
       if(move == "-1" || Math.random() < .15){
         move = Math.floor(Math.random()*3).toString();

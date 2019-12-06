@@ -3,7 +3,7 @@ services:
 
   sql-server-db:
     container_name: trained_ai_galactic_assault_container
-    image: nmasciandaro/trained_ai_galactic_assault:V2
+    image: nmasciandaro/trained_ai_galactic_assault:V3
     ports:
       - "1433:1433"
     environment:
